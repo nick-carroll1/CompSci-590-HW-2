@@ -1,17 +1,32 @@
-from autodiff import (AutoDiffer, add, sub, mult, div,
-                      square, cosh, sinh, tanh, exp, log,
-                      mm, T, dimmax, dimsum, bdcast,
-                      get)
+from autodiff import (
+    AutoDiffer,
+    add,
+    sub,
+    mult,
+    div,
+    square,
+    cosh,
+    sinh,
+    tanh,
+    exp,
+    log,
+    mm,
+    T,
+    dimmax,
+    dimsum,
+    bdcast,
+    get,
+)
 
-ad = AutoDiffer() # our global autodiffer object, which will be imported in hw2_main.py
+ad = AutoDiffer()  # our global autodiffer object, which will be imported in hw2_main.py
+
 
 def single_var_func1(w, b, x, y):
     """
     all arguments are numpy scalars.
     returns (cosh(w^2) + sinh(wx+b) - y)^2
     """
-    z = add(cosh(square(w)),
-            sinh(add(mult(w, x), b)))
+    z = add(cosh(square(w)), sinh(add(mult(w, x), b)))
     return square(sub(z, y))
 
 
@@ -20,7 +35,8 @@ def single_var_func2(w, b, x, y):
     all arguments are numpy scalars.
     returns (cosh(w^2) * tanh(wx+b) - y)^2
     """
-    raise NotImplementedError()
+    z = mult(cosh(square(w)), tanh(add(mult(w, x), b)))
+    return square(sub(z, y))
 
 
 def single_var_func_opt(lossfunc, args, lr, niter=10):
@@ -34,7 +50,7 @@ def single_var_func_opt(lossfunc, args, lr, niter=10):
     for i in range(niter):
         grad, lossval = gvf(*args)
         print("grad: {}, funcval: {}".format(grad, lossval))
-        args[0] = args[0] - lr*grad
+        args[0] = args[0] - lr * grad
 
 
 def logsumexp(Z, axis):
@@ -45,8 +61,7 @@ def logsumexp(Z, axis):
        M-dimensional array if axis=1; N-dimensional array if axis=0
     """
     maxes = dimmax(Z, axis)
-    return add(maxes, 
-               log(dimsum(exp(sub(Z, bdcast(maxes, Z.shape, axis))), axis)))
+    return add(maxes, log(dimsum(exp(sub(Z, bdcast(maxes, Z.shape, axis))), axis)))
 
 
 def lin_pred(theta, X):
@@ -68,7 +83,7 @@ def lin_xent(theta, X, Y):
     """
     bsz = X.shape[0]
     S = lin_pred(theta, X)
-    raise NotImplementedError()
+    return div(dimsum(sub(logsumexp(S, 1), dimsum(mult(Y, S), 1)), None), bsz)
 
 
 def mlp_pred(params, X):
