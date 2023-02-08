@@ -94,7 +94,7 @@ def mlp_pred(params, X):
       a B x K matrix of scores computed as: tanh(X W1^T + b) W2^T
     """
     W2, W1, b = get(params, 0), get(params, 1), get(params, 2)
-    raise NotImplementedError()
+    return mm(tanh(add(mm(X, T(W1)), bdcast(b, (X.shape[0], W1.shape[0]), 0))), T(W2))
 
 
 def mlp_xent(params, X, Y):
@@ -106,4 +106,4 @@ def mlp_xent(params, X, Y):
     """
     bsz = X.shape[0]
     S = mlp_pred(params, X)
-    raise NotImplementedError()
+    return div(dimsum(sub(logsumexp(S, 1), dimsum(mult(Y, S), 1)), None), bsz)
