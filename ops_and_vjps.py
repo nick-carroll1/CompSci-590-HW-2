@@ -143,6 +143,9 @@ class MyAdd(MyOp):
 
 class MyAccum(MyOp):
     def compute_op(self, arg0, arg1):
+        if isinstance(arg0, list) and isinstance(arg1, list):
+            assert len(arg0) == len(arg1)
+            return [arg0[i] + arg1[i] for i in range(len(arg0))]
         return arg0 + arg1
 
 
