@@ -443,7 +443,9 @@ def bdcast_vjp_for_arg(argidx, gradout, result, args):
     assert argidx == 0
     arg0 = args[0]
     assert (
-        isinstance(arg0, float) or len(arg0.shape) == 1
+        isinstance(arg0, float)
+        or len(arg0.shape) == 1
+        or isinstance(arg0.get_val() if hasattr(arg0, "get_val") else arg0, float)
     ), "could've only broadcast floats or vectors"
 
     if isinstance(arg0, float) or arg0.size == 1:  # arg0 was a scalar
